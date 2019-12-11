@@ -15,7 +15,7 @@
 4、创建volume docker volume create startalkpgdata
 4、查看镜像id: docker images
 5、启动镜像
-docker run  -v startalk_docker/permfile:/startalk/permfile -p 8080:8080 -p 5202:5202 -e hosturl="机器ip"  镜像id(可由第4步或得)
+docker run  -v startalk_docker/permfile:/startalk/permfile -p 8080:8080 -p 5202:5202 -e hosturl="机器ip"  镜像id(可由第4步获得)
 windows 用户需要加:docker run  -v startalk_docker/permfile:/startalk/permfile -v startalkpgdata:/startalk/data -p 8080:8080 -p 5202:5202 -e hosturl="机器ip"  镜像id(可由第4步或得)
 6、需要注意的点: 
  1.-v 后面接的是持久性文件在宿主机上的绝对路径，如您将permfile.zip 解压到了 /home/startalk/permfile 则-v /startalk/permfile:/startalk/permfile.冒号后面的路径不需改动  
