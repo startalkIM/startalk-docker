@@ -2,7 +2,7 @@
 ### 文件结构
 - images  
   镜像文件
-- Dockferile  
+- Dockfile  
   Dockerfile
 - permfile.zip  
   持久性文件，包括db数据、服务日志数据、redis数据、聊天上传的文件
