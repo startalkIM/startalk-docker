@@ -3,34 +3,34 @@
     "loginType": "password"
   },
   "baseaddess": {
-    "simpleapiurl": "http://10.0.1.87:8080",
-    "fileurl": "http://10.0.1.87:8080",
+    "simpleapiurl": "http://ip:8080",
+    "fileurl": "http://ip:8080",
     "domain": "qtalk",
-    "javaurl": "http://10.0.1.87:8080/package",
+    "javaurl": "http://ip:8080/package",
     "protobufPcPort": 5202,
-    "xmpp": "10.0.1.87",
+    "xmpp": "ip",
     "xmppport": 5222,
     "protobufPort": 5202,
-    "socketurl":"ws://10.0.1.87:5280/websocket",
+    "socketurl":"ws://ip:5280/websocket",
     "pubkey": "rsa_public_key",
     "xmppmport": 5222,
-    "httpurl": "http://10.0.1.87:8080/newapi",
-    "apiurl": "http://10.0.1.87:8080/api",
-    "shareurl":"http://10.0.1.87:8080/py/sharemsg",
-    "domainhost":"10.0.1.87",
-    "appWeb": "http://10.0.1.87:8080/appWeb",
-    "resetPwdUrl":"http://10.0.1.87:8080/static/reterievepassword.html"
+    "httpurl": "http://ip:8080/newapi",
+    "apiurl": "http://ip:8080/api",
+    "shareurl":"http://ip:8080/py/sharemsg",
+    "domainhost":"ip",
+    "appWeb": "http://ip:8080/appWeb",
+    "resetPwdUrl":"http://ip:8080/static/reterievepassword.html"
   },
   "imConfig": {
     "isToC": false,
     "RsaEncodeType": 1,
     "showOrganizational": true,
     "mail":"qtalk",
-    "foundConfigUrl":"http://10.0.1.87:8080//startalk/management/find/get/navigation"
+    "foundConfigUrl":"http://ip:8080//startalk/management/find/get/navigation"
   },
   "ability": {
-   "searchurl": "http://10.0.1.87:8080/py/search",
-   "new_searchurl":"http://10.0.1.87:8080/py/search",
+   "searchurl": "http://ip:8080/py/search",
+   "new_searchurl":"http://ip:8080/py/search",
    "showmsgstat": true
   },
   "RNAndroidAbility": {

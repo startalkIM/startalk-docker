@@ -23,7 +23,7 @@
     {
       "trdextendId": "Album",
       "scope": 3,
-      "icon": "http://10.0.1.87:8080/file/v2/download/5c690696b821378a6a2f780fb4a60f8c.png",
+      "icon": "http://ip:8080/file/v2/download/5c690696b821378a6a2f780fb4a60f8c.png",
       "i18NTitle": "",
       "linkType": 0,
       "linkurl": "",
@@ -33,7 +33,7 @@
     {
       "trdextendId": "Camera",
       "scope": 3,
-      "icon": "http://10.0.1.87:8080/file/v2/download/9c2f927df5a9a72da07f9b380c9dccb2.png",
+      "icon": "http://ip:8080/file/v2/download/9c2f927df5a9a72da07f9b380c9dccb2.png",
       "i18NTitle": "",
       "linkType": 0,
       "linkurl": "",
@@ -43,7 +43,7 @@
     {
       "trdextendId": "MyFile",
       "scope": 3,
-      "icon": "http://10.0.1.87:8080/file/v2/download/8f06fcb72252b23f1234496b7af5ead9.png",
+      "icon": "http://ip:8080/file/v2/download/8f06fcb72252b23f1234496b7af5ead9.png",
       "i18NTitle": "",
       "linkType": 0,
       "linkurl": "",
@@ -53,7 +53,7 @@
     {
       "trdextendId": "Location",
       "scope": 3,
-      "icon": "http://10.0.1.87:8080/file/v2/download/329329db545482626f209b43337bae37.png",
+      "icon": "http://ip:8080/file/v2/download/329329db545482626f209b43337bae37.png",
       "i18NTitle": "",
       "linkType": 0,
       "linkurl": "",
@@ -66,7 +66,7 @@
       "title": "窗口抖动",
       "i18NTitle": "",
       "scope": 3,
-      "icon": "http://10.0.1.87:8080/file/v2/download/596adb5bed41512a8b1df394792ad6ae.png"
+      "icon": "http://ip:8080/file/v2/download/596adb5bed41512a8b1df394792ad6ae.png"
     }
   ]
 }

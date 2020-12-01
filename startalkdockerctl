@@ -1,0 +1,61 @@
+#!/bin/bash
+set -e
+help(){
+echo "
+Usage: startalkdockerctl <options>
+<options>:
+    init       set config
+    reset      delte all volume and logs
+    start      docker compose all modules in background way
+    help       show help info
+"
+}
+
+find_ip() {
+  OLD_IP=`grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}' ${PWD}/compose/conf/im_http_service/classes/nav.json|head -n 1`
+  if [[ -z $OLD_IP ]];
+  then
+      OLD_IP="ip"
+  fi
+}
+
+set_ip() {
+  find_ip
+  mkdir -p ${PWD}/.data_backup/ && cp -r ${PWD}/compose/conf/ ${PWD}/.data_backup/
+  ip a
+  echo -n "监测到ip 
+ [ `ip -o addr show up primary scope global | while read -r num dev fam addr rest; do echo ${addr%/*}; done` ], 确认正确且只有一个请回车, 否则请手动输入: " && read MY_IP && MY_IP=${MY_IP:-`hostname -I|sed 's/ //g'`}
+
+  SED_IP=$(echo "$OLD_IP" | sed 's/\./\\\./g')
+  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
+  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/app.properties
+  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf//qfproxy/classes/qfproxy.properties
+  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/im_http_service/conf/classes/*.json
+  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/qfproxy/conf/classes/qfproxy.properties
+  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/push_service/conf/classes/app.properties
+}
+
+go_path() {
+  BASEDIR=$(dirname $0)
+  cd ${BASEDIR}
+}
+
+reset_all() {
+  go_path
+  set_ip
+  rm -rf  ${PWD}/compose/volume/data/pg
+  find ${PWD}/compose/volume/log/ -type f|xargs -I {} rm -f {}
+}
+
+start() {
+  go_path
+  cd compose && docker-compose up -d
+}
+
+case $1 in
+  init) go_path; set_ip;; 
+  reset) reset_all;;
+  start) start;;
+  help) help;;
+  *) help;;
+esac
