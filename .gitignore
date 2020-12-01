@@ -27,6 +27,7 @@ target/
 Thumbs.db
 
 #volume
+compose/conf
 compose/volume/log/
 compose/volume/data/
 .data_backup
