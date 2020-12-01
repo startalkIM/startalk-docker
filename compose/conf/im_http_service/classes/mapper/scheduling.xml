@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.SchedulingInfoDao">
+    <select id="selecSchedulingList"
+            resultType="com.qunar.qchat.model.SchedulingInfo">
+        SELECT
+        scheduling_id,
+        scheduling_name,
+        scheduling_type,
+        scheduling_remarks,
+        scheduling_intr,
+        scheduling_appointment,
+        scheduling_locale,
+        scheduling_locale_id,
+        scheduling_room,
+        scheduling_room_id,
+        schedule_time::timestamp without time zone,
+        scheduling_date,
+        begin_time::timestamp without time zone,
+        end_time::timestamp without time zone,
+        inviter,
+        member,
+        mem_action,
+        remind_flag,
+        action_remark,
+        canceled,
+        extract(epoch FROM date_trunc('milliseconds', update_time)) as update_time
+        FROM scheduling_info WHERE scheduling_id IN (SELECT scheduling_id FROM scheduling_info WHERE update_time > to_timestamp(#{update_time}) and member = #{user} GROUP BY scheduling_id) order by update_time;
+    </select>
+
+
+    <select id="selecSchedulingConflict"
+            resultType="com.qunar.qchat.model.SchedulingInfo">
+        select scheduling_id
+        from scheduling_info
+        where
+          member=#{user} and
+          ((to_timestamp(${begin_time}) &gt;= begin_time and to_timestamp(${begin_time}) &lt; end_time) or
+           (to_timestamp(${end_time}) &gt; begin_time and to_timestamp(${end_time}) &lt;= end_time));
+    </select>
+
+    <insert id="insertSchedulingInfo">
+        INSERT INTO scheduling_info
+        (
+        scheduling_id,
+        scheduling_name,
+        scheduling_type,
+        scheduling_remarks,
+        scheduling_intr,
+        scheduling_appointment,
+        scheduling_locale,
+        scheduling_locale_id,
+        scheduling_room,
+        scheduling_room_id,
+        schedule_time,
+        scheduling_date,
+        begin_time,
+        end_time,
+        inviter,
+        member
+        )
+        VALUES
+        <foreach collection="schedulingInfos" index="index" item="item" open="" separator="," close="">
+            (#{item.scheduling_id},
+            #{item.scheduling_name},
+            #{item.scheduling_type},
+            #{item.scheduling_remarks},
+            #{item.scheduling_intr},
+            #{item.scheduling_appointment},
+            #{item.scheduling_locale},
+            #{item.scheduling_locale_id},
+            #{item.scheduling_room},
+            #{item.scheduling_room_id},
+            #{item.schedule_time}::TIMESTAMP,
+            #{item.scheduling_date}::DATE,
+            #{item.begin_time}::TIMESTAMP,
+            #{item.end_time}::TIMESTAMP,
+            #{item.inviter},
+            #{item.member}
+            )
+        </foreach>
+        ;
+    </insert>
+
+    <update id="cancelSchedulingInfo">
+        UPDATE scheduling_info SET canceled = TRUE, update_time = now()::timestamp(3)  where scheduling_id = #{scheduling_id};
+    </update>
+
+    <delete id="deleteSchedulingInfo">
+        DELETE FROM scheduling_info where scheduling_id = #{scheduling_id};
+    </delete>
+
+    <select id="selectPreScheduling" resultType="com.qunar.qchat.model.SchedulingInfo">
+        SELECT
+        id,
+        scheduling_id,
+        scheduling_name,
+        scheduling_type,
+        scheduling_remarks,
+        scheduling_intr,
+        scheduling_appointment,
+        scheduling_locale,
+        scheduling_locale_id,
+        scheduling_room,
+        scheduling_room_id,
+        schedule_time,
+        scheduling_date,
+        begin_time,
+        end_time,
+        inviter,
+        member,
+        mem_action,
+        remind_flag,
+        action_remark,
+        canceled,
+        update_time
+        FROM scheduling_info
+        WHERE begin_time = date_trunc('min', now()::timestamptz) + '15 min' and mem_action != '2' and remind_flag= '0' and canceled = 'f';
+    </select>
+
+    <select id="selectPostScheduling" resultType="com.qunar.qchat.model.SchedulingInfo">
+        SELECT
+        id,
+        scheduling_id,
+        scheduling_name,
+        scheduling_type,
+        scheduling_remarks,
+        scheduling_intr,
+        scheduling_appointment,
+        scheduling_locale,
+        scheduling_locale_id,
+        scheduling_room,
+        scheduling_room_id,
+        schedule_time,
+        scheduling_date,
+        begin_time,
+        end_time,
+        inviter,
+        member,
+        mem_action,
+        remind_flag,
+        action_remark,
+        canceled,
+        update_time
+        FROM scheduling_info
+        WHERE end_time = date_trunc('min', now()::timestamptz) + '15 min' and mem_action != '2' and remind_flag= '1' and canceled = 'f';
+    </select>
+
+    <update id="updateRemindFlag">
+        UPDATE scheduling_info SET remind_flag = #{flag} WHERE id  IN (
+        <foreach collection="ids" index="index" item="item" open="" separator="," close="">
+            #{item}
+        </foreach>
+        );
+    </update>
+
+    <select id="selecSchedulingInfo"
+            resultType="com.qunar.qchat.model.SchedulingInfo">
+        SELECT
+        scheduling_id,
+        scheduling_name,
+        scheduling_type,
+        scheduling_remarks,
+        scheduling_intr,
+        scheduling_appointment,
+        scheduling_locale,
+        scheduling_locale_id,
+        scheduling_room,
+        scheduling_room_id,
+        schedule_time::timestamp without time zone,
+        scheduling_date,
+        begin_time::timestamp without time zone,
+        end_time::timestamp without time zone,
+        inviter,
+        member,
+        mem_action,
+        remind_flag,
+        action_remark,
+        canceled,
+        extract(epoch FROM date_trunc('milliseconds', update_time)) as update_time
+        FROM scheduling_info WHERE scheduling_id = #{scheduling_id};
+    </select>
+
+    <update id="changeSchedulingAction">
+        UPDATE scheduling_info SET mem_action = #{action}, action_remark = #{action_reason} where scheduling_id = #{scheduling_id} and member = #{username};
+    </update>
+
+    <select id="changeSchedulingUpdatetime"  resultType="com.qunar.qchat.model.SchedulingInfo">
+        UPDATE scheduling_info SET update_time = now()::timestamp(3) where scheduling_id = #{scheduling_id}  returning  scheduling_id,
+        scheduling_name,
+        scheduling_type,
+        scheduling_remarks,
+        scheduling_intr,
+        scheduling_appointment,
+        scheduling_locale,
+        scheduling_locale_id,
+        scheduling_room,
+        scheduling_room_id,
+        schedule_time::timestamp without time zone,
+        scheduling_date,
+        begin_time::timestamp without time zone,
+        end_time::timestamp without time zone,
+        inviter,
+        member,
+        mem_action,
+        remind_flag,
+        action_remark,
+        canceled,
+        extract(epoch FROM date_trunc('milliseconds', update_time)) as update_time;
+    </select>
+</mapper>

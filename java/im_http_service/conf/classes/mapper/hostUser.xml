@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qunar.qchat.dao.IHostUserDao">
+
+    <resultMap id="HostUserModel" type="com.qunar.qchat.dao.model.HostUserModel">
+        <id column="id" property="id"/>
+        <result column="host_id" property="hostId"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="department" property="department"/>
+        <result column="tel" property="tel"/>
+        <result column="email" property="email"/>
+        <result column="dep1" property="dep1"/>
+        <result column="dep2" property="dep2"/>
+        <result column="dep3" property="dep3"/>
+        <result column="dep4" property="dep4"/>
+        <result column="dep5" property="dep5"/>
+        <result column="pinyin" property="pinyin"/>
+        <result column="frozen_flag" property="frozenFlag"/>
+        <result column="version" property="version"/>
+        <result column="user_type" property="userType"/>
+        <result column="hire_flag" property="hireFlag"/>
+        <result column="gender" property="gender"/>
+        <result column="password" property="password"/>
+        <result column="initialpwd" property="initialpwd"/>
+        <result column="ps_deptid" property="psDeptid"/>
+    </resultMap>
+
+
+    <resultMap id="HostUserForVersion" type="com.qunar.qchat.dao.model.HostUserModel">
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="department" property="department"/>
+        <result column="pinyin" property="pinyin"/>
+        <result column="version" property="version"/>
+        <result column="user_type" property="userType"/>
+        <result column="hire_flag" property="hireFlag"/>
+    </resultMap>
+
+    <resultMap id="HostUserModelForHost" type="com.qunar.qchat.dao.model.HostUserModel">
+        <id column="id" property="id"/>
+        <result column="host_id" property="hostId"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="department" property="department"/>
+        <result column="tel" property="tel"/>
+        <result column="email" property="email"/>
+        <result column="dep1" property="dep1"/>
+        <result column="dep2" property="dep2"/>
+        <result column="dep3" property="dep3"/>
+        <result column="dep4" property="dep4"/>
+        <result column="dep5" property="dep5"/>
+        <result column="pinyin" property="pinyin"/>
+        <result column="frozen_flag" property="frozenFlag"/>
+        <result column="version" property="version"/>
+        <result column="user_type" property="userType"/>
+        <result column="hire_flag" property="hireFlag"/>
+        <result column="gender" property="gender"/>
+        <result column="password" property="password"/>
+        <result column="initialpwd" property="initialpwd"/>
+        <result column="ps_deptid" property="psDeptid"/>
+        <result column="pwd_salt" property="pwdSalt"/>
+        <result column="approve_flag" property="approveFlag"/>
+        <result column="user_desc" property="userDesc"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="column_all">
+        id,host_id,user_id,user_name,department,tel,email,dep1,dep2,dep3,dep4,dep5,pinyin,
+        frozen_flag,version,user_type,hire_flag,gender,password,initialpwd,ps_deptid
+    </sql>
+
+    <sql id="column_all_for_host">
+        id,host_id,user_id,user_name,department,tel,email,dep1,dep2,dep3,dep4,dep5,pinyin,
+        frozen_flag,version,user_type,hire_flag,gender,password,initialpwd,ps_deptid,pwd_salt,approve_flag,user_desc,create_time
+    </sql>
+
+    <sql id="column_version">
+        user_id, user_name, department, pinyin, version, user_type, hire_flag
+    </sql>
+
+    <select id="selectIncrementByVersion" resultMap="HostUserForVersion">
+        select <include refid="column_version"/> from ${table} where version > ${version} and host_id = #{hostId}
+    </select>
+
+    <select id="selectMaxVersion" resultType="int">
+        select max(version) from ${table}
+    </select>
+
+    <select id="selectOnJobUserFromHostUser"
+            resultType="com.qunar.qchat.dao.model.UserInfoQtalk">
+        SELECT
+        user_id AS user_id,
+        department AS department,
+        user_name AS user_name,
+        dep1 AS dep1,
+        dep2 AS dep2,
+        dep3 AS dep3,
+        dep4 AS dep4,
+        dep5 AS dep5,
+        ps_deptid AS ps_deptid,
+        gender AS gender,
+        hire_flag AS hire_flag,
+        user_type AS user_type,
+        version AS version,
+        email AS email,
+        pinyin AS pinyin
+        FROM host_users
+        where hire_flag=1 and host_id=#{hostID};
+    </select>
+
+
+    <insert id="insertUser"
+            parameterType="com.qunar.qchat.dao.model.UserInfoQtalk">
+        insert into host_users
+        (
+        host_id,
+        user_id,
+        password,
+        user_name,
+        department,
+        ps_deptid,
+        dep1,
+        dep2,
+        dep3,
+        dep4,
+        dep5,
+        pinyin,
+        hire_flag,
+        version,
+        gender,
+        user_type
+        )
+        VALUES (
+        #{UserInfoQtalk.host_id},
+        #{UserInfoQtalk.user_id},
+        #{UserInfoQtalk.user_id},
+        #{UserInfoQtalk.user_name},
+        #{UserInfoQtalk.department},
+        #{UserInfoQtalk.ps_deptid},
+        #{UserInfoQtalk.dep1},
+        #{UserInfoQtalk.dep2},
+        #{UserInfoQtalk.dep3},
+        #{UserInfoQtalk.dep4},
+        #{UserInfoQtalk.dep5},
+        hanzi_to_pinyin(#{UserInfoQtalk.user_name}),
+        #{UserInfoQtalk.hire_flag},
+        #{UserInfoQtalk.version},
+        #{UserInfoQtalk.gender},
+        #{UserInfoQtalk.user_type}) ON conflict(user_id, host_id) DO UPDATE
+        set user_name=#{UserInfoQtalk.user_name},department=#{UserInfoQtalk.department},ps_deptid=#{UserInfoQtalk.ps_deptid},dep1=#{UserInfoQtalk.dep1},
+        dep2=#{UserInfoQtalk.dep2},dep3=#{UserInfoQtalk.dep3},dep4=#{UserInfoQtalk.dep4},dep5=#{UserInfoQtalk.dep5},pinyin=hanzi_to_pinyin(#{UserInfoQtalk.user_name}),
+        hire_flag=#{UserInfoQtalk.hire_flag},version=#{UserInfoQtalk.version},gender = #{UserInfoQtalk.gender};
+    </insert>
+
+    <update id="updateHostUserHireType"
+            parameterType="com.qunar.qchat.dao.model.UserInfoQtalk">
+        update host_users
+        SET version=#{UserInfoQtalk.version},
+        hire_flag = #{UserInfoQtalk.hire_flag}
+        WHERE user_id=#{UserInfoQtalk.user_id};
+    </update>
+
+    <update id="updateHostUser"
+            parameterType="com.qunar.qchat.dao.model.UserInfoQtalk">
+        update host_users
+        SET frozen_flag=0,
+        user_name=#{UserInfoQtalk.user_name},
+        hire_flag=#{UserInfoQtalk.hire_flag},
+        department=#{UserInfoQtalk.department},
+        dep1=#{UserInfoQtalk.dep1},
+        dep2=#{UserInfoQtalk.dep2},
+        dep3=#{UserInfoQtalk.dep3},
+        dep4=#{UserInfoQtalk.dep4},
+        dep5=#{UserInfoQtalk.dep5},
+        ps_deptid=#{UserInfoQtalk.ps_deptid},
+        version=#{UserInfoQtalk.version},
+        user_type=#{UserInfoQtalk.user_type},
+        gender=#{UserInfoQtalk.gender},
+        email = #{UserInfoQtalk.email}
+        WHERE user_id=#{UserInfoQtalk.user_id} and host_id=1;
+    </update>
+
+    <delete id="deleteHostUsers">
+        DELETE from host_users where user_id!='admin';
+    </delete>
+
+    <insert id="insertHostUser" parameterType="com.qunar.qchat.dao.model.HostUserModel">
+        insert into host_users
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="hostId != null">host_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="department != null">department,</if>
+            <if test="tel != null">tel,</if>
+            <if test="email != null">email,</if>
+            <if test="dep1 != null">dep1,</if>
+            <if test="dep2 != null">dep2,</if>
+            <if test="dep3 != null">dep3,</if>
+            <if test="dep4 != null">dep4,</if>
+            <if test="dep5 != null">dep5,</if>
+            <if test="pinyin != null">pinyin,</if>
+            <if test="frozenFlag != null">frozen_flag,</if>
+            <if test="version != null">version,</if>
+            <if test="userType != null">user_type,</if>
+            <if test="hireFlag != null">hire_flag,</if>
+            <if test="gender != null">gender,</if>
+            <if test="password != null">password,</if>
+            <if test="initialpwd != null">initialpwd,</if>
+            <if test="psDeptid != null">ps_deptid,</if>
+            <if test="pwdSalt != null">pwd_salt,</if>
+            <if test="approveFlag != null">approve_flag,</if>
+            <if test="userDesc != null">user_desc,</if>
+            <if test="userOrigin != null">user_origin,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="hostId != null">#{hostId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="department != null">#{department},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="email != null">#{email},</if>
+            <if test="dep1 != null">#{dep1},</if>
+            <if test="dep2 != null">#{dep2},</if>
+            <if test="dep3 != null">#{dep3},</if>
+            <if test="dep4 != null">#{dep4},</if>
+            <if test="dep5 != null">#{dep5},</if>
+            <if test="pinyin != null">#{pinyin},</if>
+            <if test="frozenFlag != null">#{frozenFlag},</if>
+            <if test="version != null">#{version},</if>
+            <if test="userType != null">#{userType},</if>
+            <if test="hireFlag != null">#{hireFlag},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="password != null">#{password},</if>
+            <if test="initialpwd != null">#{initialpwd},</if>
+            <if test="psDeptid != null">#{psDeptid},</if>
+            <if test="pwdSalt != null">#{pwdSalt},</if>
+            <if test="approveFlag != null">#{approveFlag},</if>
+            <if test="userDesc != null">#{userDesc},</if>
+            <if test="userOrigin != null">#{userOrigin},</if>
+        </trim>
+    </insert>
+
+    <select id="selectByHostAndUserId" resultType="int">
+        select <include refid="column_all_for_host"/> from host_users where host_id = #{hostId} and user_id = #{userId}
+    </select>
+
+    <select id="searchHostUsersCount" resultType="int">
+        select count(1) from host_users where host_id = #{hostId}
+        <if test="approveFlag != null">
+            and approve_flag = #{approveFlag}
+        </if>
+        <if test="keyword != null">
+            <bind name="searchkey" value="'%' + keyword + '%'"/>
+            and (user_id like #{searchkey} or user_name like #{searchkey})
+        </if>
+        and user_id != 'file-transfer'
+        and user_id != 'admin'
+        and user_origin = 1
+        and (hire_flag = 1 or (hire_flag = 0 and approve_flag != 1))
+    </select>
+
+    <select id="searchHostUsers" resultMap="HostUserModelForHost">
+        select <include refid="column_all_for_host"/> from host_users where host_id = #{hostId}
+        <if test="approveFlag != null">
+            and approve_flag = #{approveFlag}
+        </if>
+        <if test="keyword != null">
+            and (user_id like '%${keyword}%' or user_name like '%${keyword}%')
+        </if>
+        and user_id != 'file-transfer'
+        and user_id != 'admin'
+        and user_origin = 1
+        and (hire_flag = 1 or (hire_flag = 0 and approve_flag != 1))
+        order by create_time desc
+        limit #{limit} offset #{offset}
+
+    </select>
+    <update id="updateApproveStatus">
+        update host_users set approve_flag = #{status},
+        <if test="status ==  1">
+            hire_flag = 1,
+        </if>
+        version = (select max(version) from host_users) + 1 where host_id = #{hostId} and id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
+
+    <select id="selectApproveStatus" resultType="int">
+        select approve_flag from host_users where user_id = #{userId} and host_id = #{hostId}
+    </select>
+
+    <select id="selectAdminFlagByUserId" resultType="int">
+        select admin_flag from host_users where user_id = #{userId} and host_id = #{hostId}
+    </select>
+
+    <select id="selectCountFireUserByUserId" resultType="int">
+        select count(*) from host_users where user_id = #{userId} and host_id = #{hostId} and hire_flag = 0 and approve_flag = 1
+    </select>
+
+    <delete id="deleteFireUserByUserId">
+        delete from host_users where user_id = #{userId} and host_id = #{hostId} and hire_flag = 0;
+        delete from vcard_version where username = #{userId} and host = #{host};
+    </delete>
+</mapper>

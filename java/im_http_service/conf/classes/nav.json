@@ -1,0 +1,56 @@
+{
+  "Login": {
+    "loginType": "password"
+  },
+  "baseaddess": {
+    "simpleapiurl": "http://10.0.1.87:8080",
+    "fileurl": "http://10.0.1.87:8080",
+    "domain": "qtalk",
+    "javaurl": "http://10.0.1.87:8080/package",
+    "protobufPcPort": 5202,
+    "xmpp": "10.0.1.87",
+    "xmppport": 5222,
+    "protobufPort": 5202,
+    "socketurl":"ws://10.0.1.87:5280/websocket",
+    "pubkey": "rsa_public_key",
+    "xmppmport": 5222,
+    "httpurl": "http://10.0.1.87:8080/newapi",
+    "apiurl": "http://10.0.1.87:8080/api",
+    "shareurl":"http://10.0.1.87:8080/py/sharemsg",
+    "domainhost":"10.0.1.87",
+    "appWeb": "http://10.0.1.87:8080/appWeb",
+    "resetPwdUrl":"http://10.0.1.87:8080/static/reterievepassword.html"
+  },
+  "imConfig": {
+    "isToC": false,
+    "RsaEncodeType": 1,
+    "showOrganizational": true,
+    "mail":"qtalk",
+    "foundConfigUrl":"http://10.0.1.87:8080//startalk/management/find/get/navigation"
+  },
+  "ability": {
+   "searchurl": "http://10.0.1.87:8080/py/search",
+   "new_searchurl":"http://10.0.1.87:8080/py/search",
+   "showmsgstat": true
+  },
+  "RNAndroidAbility": {
+    "RNMineView": true,
+    "RNGroupCardView": true,
+    "RNPublicNumberListView": false,
+    "RNAboutView": false,
+    "RNGroupListView": false,
+    "RNContactView": true,
+    "RNSettingView": true,
+    "RNUserCardView": true
+  }, "RNAbility": {
+  "RNMineView": true,
+  "RNGroupCardView": true,
+  "RNPublicNumberListView": true,
+  "RNAboutView": false,
+  "RNGroupListView": true,
+  "RNContactView": true,
+  "RNSettingView": true,
+  "RNUserCardView": true
+},
+  "version": 1
+}

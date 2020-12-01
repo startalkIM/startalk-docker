@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.IMucInfoDao">
+
+    <resultMap id="mucIncrementInfoResultMap" type="com.qunar.qchat.dao.model.MucInfoModel">
+        <result property="mucName" column="muc_name"></result>
+        <result property="showName" column="show_name"></result>
+        <result property="mucDesc" column="muc_desc"></result>
+        <result property="mucTitle" column="muc_title"></result>
+        <result property="mucPic" column="muc_pic"></result>
+        <result property="version" column="version"></result>
+    </resultMap>
+
+    <sql id="column_all">
+        muc_name, show_name, muc_desc, muc_title, muc_pic, version
+    </sql>
+
+    <select id="selectMucIncrementInfo" resultType="com.qunar.qchat.dao.model.MucIncrementInfo">
+        select muc_name,created_at,domain,(extract(epoch from date_trunc('MS', created_at))*1000 - 8*3600*1000) as t,registed_flag
+        from user_register_mucs where created_at > to_timestamp(#{t}) and username = #{u} and host = #{d};
+    </select>
+
+    <select id="selectMucIncrementInfoNew" resultType="com.qunar.qchat.dao.model.MucIncrementInfo">
+        select muc_name,created_at,domain,(extract(epoch from date_trunc('MS', created_at))*1000 - 8*3600*1000) as t,registed_flag
+        from user_register_mucs where created_at > to_timestamp(#{t},'YYYY-MM-DD hh24:MI:ss.ms')
+        and username = #{u} and host = #{d} order by created_at desc;
+    </select>
+
+    <select id="updateMucInfo" parameterType="com.qunar.qchat.dao.model.MucInfoModel" resultMap="mucIncrementInfoResultMap">
+       update muc_vcard_info
+         <set>
+            <if test="showName != null and showName != ''"> show_name = #{showName}, </if>
+            <if test="mucDesc != null"> muc_desc = #{mucDesc}, </if>
+            <if test="mucTitle != null"> muc_title = #{mucTitle}, </if>
+            <if test="mucPic != null and mucPic != ''"> muc_pic = #{mucPic}, </if>
+            <if test="showNamePinyin != null"> show_name_pinyin = #{showNamePinyin}, </if>
+            update_time = current_timestamp,
+            version = cast(muc_vcard_info.version as integer)+ 1
+         </set>
+         where muc_name = #{mucName}
+
+         returning muc_name,show_name,muc_desc,muc_title,muc_pic,version
+    </select>
+
+    <select id="selectMucCountByMucName" resultType="int">
+        select count(*) from muc_vcard_info where muc_name = #{mucName}
+    </select>
+
+    <select id="selectMucInfoByIds" resultMap="mucIncrementInfoResultMap">
+        select <include refid="column_all"/> from muc_vcard_info where muc_name in
+          <foreach collection="ids" separator="," item="id" open="(" close=")">#{id}</foreach>
+
+    </select>
+
+    <select id="checkMucExist" resultType="int">
+        select count(*) from muc_room where name = #{mucName}
+    </select>
+
+    <insert id="insertMucInfo" parameterType="com.qunar.qchat.dao.model.MucInfoModel">
+        insert into muc_vcard_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+
+            <if test="mucName != null">
+                muc_name,
+            </if>
+            <if test="mucDesc != null">
+                muc_desc,
+            </if>
+            <if test="showName != null">
+                show_name,
+            </if>
+            <if test="mucTitle != null">
+                muc_title,
+            </if>
+            <if test="mucPic != null">
+                muc_pic,
+            </if>
+            <if test="showNamePinyin !=null">
+                show_name_pinyin,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="mucName != null">
+                #{mucName},
+            </if>
+            <if test="mucDesc != null">
+                #{mucDesc},
+            </if>
+            <if test="showName != null">
+                #{showName},
+            </if>
+            <if test="mucTitle != null">
+                #{mucTitle},
+            </if>
+            <if test="mucPic != null">
+                #{mucPic},
+            </if>
+            <if test="showNamePinyin != null">
+                #{showNamePinyin},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectByMucName" resultMap="mucIncrementInfoResultMap">
+        select <include refid="column_all"/> from muc_vcard_info where muc_name = #{mucName}
+    </select>
+
+    <select id="selectMucNamesByUsername" resultType="string">
+        select muc_name || '@' || domain from user_register_mucs where username = #{userName} AND registed_flag=1;
+    </select>
+    <select id="selectIncrementMucVCards" resultMap="mucIncrementInfoResultMap">
+        select <include refid="column_all"/> from muc_vcard_info where 1=1
+        <if test = "ids != null and ids.size() > 0">
+            and muc_name in
+            <foreach collection="ids" separator="," item="id" open="(" close=")">#{id}</foreach>
+        </if>
+        <if test = "ids == null or ids.size() == 0">
+            and 1=0
+        </if>
+        and update_time > #{updateTime}
+
+    </select>
+
+</mapper>

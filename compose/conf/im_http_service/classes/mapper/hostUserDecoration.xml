@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qunar.qchat.dao.IHostUserDecorationDao">
+
+
+    <resultMap id="userDecorationMap" type="com.qunar.qchat.dao.model.HostUserDecorationModel">
+        <result column="id" property="id"></result>
+        <result column="d_user_id" property="userId"></result>
+        <result column="d_host" property="host"></result>
+        <result column="d_type" property="type"></result>
+        <result column="d_url" property="url"></result>
+        <result column="d_url_desc" property="urlDesc"></result>
+        <result column="d_provider" property="provider"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="update_time" property="updateTime"></result>
+    </resultMap>
+
+    <sql id="column_all">
+        id ,d_user_id, d_host, d_type, d_url, d_url_desc, d_provider, create_time, update_time
+    </sql>
+
+    <select id="selectUserDecorations" resultMap="userDecorationMap">
+        select
+          id,
+          d_user_id,
+          d_host,
+          d_type,
+          d_url,
+          d_url_desc,
+          update_time
+        from
+          host_users_decoration
+        where d_user_id = #{userId}
+          and d_host = #{host}
+          order by update_time desc
+    </select>
+
+</mapper>

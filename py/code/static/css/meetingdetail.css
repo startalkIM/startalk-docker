@@ -1,0 +1,103 @@
+span {
+    display: block;
+}
+
+.meetingTitle {
+    font-size: 24px;
+    color: #212121;
+}
+
+.meetingDesc {
+    font-size: 16px;
+    color: #888888;
+    margin-bottom: 20px;
+}
+
+.meetingItem {
+    line-height: 24px;
+    font-size: 16px;
+    color: #333333;
+}
+
+.buttonDiv {
+    max-width: 500px;
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+.button, .button:visited {
+    display: inline-block;
+
+    width: 80px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 16px;
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+    color: #212121;
+    text-align: center;
+    /*margin-left: 15px;*/
+    float: left
+}
+
+.button:hover {
+    background: #42CF94;
+    color: #FFF;
+}
+
+.memberList {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.memberList > thead > tr {
+    background: #3DA0DB;
+    height: 36px;
+    color: white;
+}
+
+.memberList > tbody > tr > td {
+    text-align: center;
+    height: 36px;
+}
+
+.oddRow {
+    background: #eaeaea;
+}
+
+.agreeState {
+    color: #42CF94;
+}
+
+.remarkText {
+    font-size: 15px;
+    height: 30px;
+    vertical-align: text-top;
+}
+
+.refuseState {
+    color: #f04a4a;
+}
+
+.interimState {
+    color: #5f73e9;
+}
+
+.unknowState {
+    color: #888888;
+}
+
+.bodyClass {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#remark {
+    max-width: 500px;
+    width: 100%;
+    height: 100px;
+}

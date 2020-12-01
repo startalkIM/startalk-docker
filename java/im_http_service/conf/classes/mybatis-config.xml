@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 打印查询语句 -->
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+    <typeAliases>
+        <typeAlias alias="QCloudMain" type="com.qunar.qchat.dao.model.QCloudMain"/>
+        <typeAlias alias="QCloudSub" type="com.qunar.qchat.dao.model.QCloudSub"/>
+        <typeAlias alias="QCloudMainHistory" type="com.qunar.qchat.dao.model.QCloudMainHistory"/>
+        <typeAlias alias="QCloudSubHistory" type="com.qunar.qchat.dao.model.QCloudSubHistory"/>
+    </typeAliases>
+</configuration>

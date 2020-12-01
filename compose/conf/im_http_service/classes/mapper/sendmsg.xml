@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.ISendMsgDao">
+
+    <insert id="insertSelective" parameterType="com.qunar.qchat.model.SendWhiteModel">
+        insert into send_msg_white
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="appcode != null">
+                appcode,
+            </if>
+            <if test="ip != null">
+                ip_list,
+            </if>
+            <if test="fromUser != null">
+                from_user,
+            </if>
+            <if test="ownerUser != null">
+                owner_user,
+            </if>
+            <if test="reviewFlag != null">
+                review_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="appcode != null">
+                #{appcode,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=ARRAY,typeHandler = com.qunar.qchat.handler.ArryTypeHandler},
+            </if>
+            <if test="fromUser != null">
+                #{fromUser,jdbcType=VARCHAR},
+            </if>
+            <if test="ownerUser != null">
+                #{ownerUser,jdbcType=VARCHAR},
+            </if>
+            <if test="reviewFlag != null">
+                #{reviewFlag,jdbcType=INTEGER},
+            </if>
+        </trim>
+        ON conflict(from_user,appcode) DO NOTHING;
+    </insert>
+
+</mapper>

@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.IGetMsgDao">
+
+    <select id="selectMsgbyTime"
+            resultType="com.qunar.qchat.dao.model.QGetMsg">
+        SELECT
+        m_from,
+        from_host,
+        m_to,
+        to_host,
+        m_body,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        read_flag
+        FROM msg_history
+        WHERE ((m_from=#{fuser} and from_host = #{fhost} and m_to=#{tuser} and to_host = #{thost})
+             or (m_to=#{fuser}   and to_host = #{fhost}   and m_from=#{tuser} and from_host = #{thost} ))
+         and create_time ${direction} to_timestamp(#{time})
+        ORDER by create_time ${turn} limit #{num} ;
+    </select>
+
+    <select id="selectMsgBackupbyTime"
+            resultType="com.qunar.qchat.dao.model.QGetMsg">
+        SELECT
+        m_from,
+        from_host,
+        m_to,
+        to_host,
+        m_body,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        read_flag
+        FROM msg_history_backup
+        WHERE ((m_from=#{fuser} and from_host = #{fhost} and m_to=#{tuser} and to_host = #{thost})
+        or (m_to=#{fuser}   and to_host = #{fhost}   and m_from=#{tuser} and from_host = #{thost} ))
+        and create_time ${direction} to_timestamp(#{time})
+        ORDER by create_time ${turn} limit #{num} ;
+    </select>
+
+
+
+    <select id="selectQchatHistory"
+            resultType="com.qunar.qchat.dao.model.QGetMsg">
+        SELECT
+        m_from,
+        from_host,
+        m_to,
+        to_host,
+        m_body,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        read_flag
+        FROM msg_history
+        WHERE ((m_from=#{user}  and from_host = #{host}) or (m_to=#{user} and to_host = #{host}))  and create_time > to_timestamp(#{time}) and msg_type &lt;&gt; 'trans'
+        ORDER by create_time asc limit #{num} ;
+    </select>
+
+    <select id="selectHistory"
+            resultType="com.qunar.qchat.dao.model.QGetMsg">
+     select * from (
+        (SELECT
+        m_from,
+        from_host,
+        m_to,
+        to_host,
+        m_body,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        read_flag
+        FROM msg_history
+        WHERE ((m_from=#{user}  and from_host = #{host}) or (m_to=#{user} and to_host = #{host}))  and create_time > to_timestamp(#{time})
+         ORDER by create_time asc  limit #{num})  union
+                (SELECT
+        m_from,
+        from_host,
+        m_to,
+        to_host,
+        m_body,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        read_flag
+        FROM warn_msg_history
+        WHERE ((m_from=#{user}  and from_host = #{host}) or (m_to=#{user} and to_host = #{host}))  and create_time > to_timestamp(#{time})
+         ORDER by create_time asc limit #{num})
+        ) as a
+        ORDER by create_time asc limit #{num} ;
+    </select>
+
+
+    <select id="selectMucMsgbyTime"
+                         resultType="com.qunar.qchat.dao.model.QGetMucMsg">
+    SELECT
+    muc_room_name,
+    nick,
+    packet,
+    create_time,
+    extract(epoch from date_trunc('US', create_time)),
+    host
+    FROM muc_room_history
+    WHERE (muc_room_name=#{muc}  and create_time ${direction} to_timestamp(#{time}))
+    ORDER by create_time ${turn} limit #{num} ;
+</select>
+
+    <select id="selectMucMsgBackupbyTime"
+            resultType="com.qunar.qchat.dao.model.QGetMucMsg">
+        SELECT
+        muc_room_name,
+        nick,
+        packet,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        host
+        FROM muc_room_history_backup
+        WHERE (muc_room_name=#{muc}  and create_time ${direction} to_timestamp(#{time}))
+        ORDER by create_time ${turn} limit #{num} ;
+    </select>
+
+    <select id="selectMucHistory"
+            resultType="com.qunar.qchat.dao.model.QGetMucMsg">
+        SELECT
+        muc_room_name,
+        nick,
+        packet,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        host
+        FROM muc_room_history
+        WHERE muc_room_name in  (select distinct(muc_name) from user_register_mucs where username = (#{user})
+        and host = #{host} and  registed_flag = '1') and create_time > to_timestamp(#{time})
+        ORDER by create_time asc limit #{num} ;
+    </select>
+
+
+    <select id="selectLocalDomainMucHistory"
+            resultType="com.qunar.qchat.dao.model.QGetMucMsg">
+        SELECT
+        muc_room_name,
+        nick,
+        packet,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        host
+        FROM muc_room_history
+        WHERE muc_room_name in  (select distinct(muc_name) from muc_room_users where username = #{user} and
+        host =  #{host}) and create_time > to_timestamp(#{time})
+        ORDER by create_time asc limit #{num} ;
+    </select>
+
+    <select id="selectMucTime"
+            resultType="com.qunar.qchat.dao.model.QMucTime">
+        SELECT
+        muc_name,domain,date
+        FROM muc_room_users
+        WHERE username =#{user} and host = #{host} ;
+    </select>
+
+    <select id="selectMucTime1"
+            resultType="com.qunar.qchat.dao.model.QMucTime">
+        SELECT
+        muc_name,domain,date
+        FROM muc_room_users
+        WHERE username =#{user} and host = #{host} and update_time >to_timestamp(#{time});
+    </select>
+
+    <select id="selectMucMinTime"
+            resultType="String">
+        SELECT
+        min(date)
+        FROM muc_room_users
+        WHERE username =#{user} and host = #{host} and  date >  0;
+    </select>
+
+    <select id="selectMucHost"
+            resultType="String" >
+        SELECT
+        distinct(domain)
+        FROM user_register_mucs
+        WHERE username =#{user} and host = #{host};
+    </select>
+
+
+    <select id="selectSystemMsg"
+            resultType="com.qunar.qchat.dao.model.QGetMsg">
+        SELECT
+        m_from,
+        m_body,
+        create_time
+        FROM notice_history
+        WHERE host = #{host} and create_time ${direction} to_timestamp(#{time})
+        ORDER by create_time  ${turn} limit #{num} ;
+    </select>
+
+    <select id="selectSystemHistory"
+            resultType="com.qunar.qchat.dao.model.QGetMsg">
+        SELECT
+        m_from,
+        m_body
+        FROM notice_history
+        WHERE host = #{host} and create_time > to_timestamp(#{time})
+        ORDER by create_time asc limit #{num} ;
+    </select>
+
+    <select id="selectMucDomain"
+            resultType="java.util.HashMap" >
+        SELECT
+        muc_name,domain
+        FROM muc_room_users
+        WHERE username =#{user} and host = #{host};
+    </select>
+
+
+    <select id="selectConsultMsgbyTime"
+            resultType="com.qunar.qchat.dao.model.QGetMsg">
+        SELECT
+        m_from,
+        from_host,
+        m_to,
+        to_host,
+        m_body,
+        create_time,
+        extract(epoch from date_trunc('US', create_time)),
+        read_flag
+        FROM msg_history
+        WHERE ((m_from = #{from} and m_to = #{virtual} and
+                xpath('/message/@realto', m_body::xml)::text = #{real})
+                 or
+                (m_from = #{virtual} and m_to = #{from} and
+                xpath('/message/@realfrom', m_body::xml)::text =  #{real}))
+        and create_time ${direction} to_timestamp(#{time})
+        ORDER by create_time ${turn} limit #{num} ;
+    </select>
+
+    <select id="get_readflag"
+            resultType="com.qunar.qchat.dao.model.QMsgReadFlag" >
+        SELECT
+        id, msg_id,read_flag, extract(epoch from date_trunc('US', update_time)) as update_time
+        FROM msg_history
+        WHERE (m_from = #{user} or m_to=#{user}) and update_time > to_timestamp(#{time})
+        <if test="id != 0">
+            and id > #{id}
+        </if>
+        order by create_time desc limit 10000;
+    </select>
+</mapper>

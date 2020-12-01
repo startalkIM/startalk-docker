@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.IGetRblDao">
+    <select id="selectRblMsg"
+            resultType="com.qunar.qchat.dao.model.GetRblMsg">
+      select a.user,a.host,a.xmlBody, a.create_time, COALESCE(b.cnt,0) as cnt ,extract(epoch from a.create_time) as time ,1 as mFlag from (select b.msg_id, a.user, a.host,b.m_body
+        as xmlBody, b.create_time as create_time from (select case when m_from = '${userid}'
+        then m_to else m_from end as user,case when m_from = '${userid}'
+        then to_host else from_host end as host,max(id) as msgid from msg_history where
+        create_time > now() - interval '7 day' and  (m_from =   '${userid}' or m_to =
+        '${userid}') group by case when m_from =   '${userid}' then m_to else m_from end,
+        case when m_from = '${userid}'  then to_host else from_host end) as
+        a inner join msg_history as b on a.msgid = b.id order by b.create_time asc) as
+        a left join (select m_from, count(*) as cnt  from msg_history
+        where m_to =  '${userid}' and ((read_flag &amp; 2) = 0) and create_time > now() -
+        interval '7 day' group by m_from) as b on a.user = b.m_from order by a.create_time
+    desc;
+    </select>
+
+
+
+    <select id="selecRblMucMsg"
+            resultType="com.qunar.qchat.dao.model.GetRblMsg">
+        select a.groupname as user,2 as mFlag , case when b.cnt is null then 0 else b.cnt end,
+          a.msg_id,a.create_time, extract(epoch from a.create_time) as time, a.packet as xmlBody
+          from ((select concat(b.muc_room_name, '@conference.', b.host) as groupname, max(b.id)
+          as msgid from muc_room_users a inner join muc_room_history b on a.muc_name = b.muc_room_name
+          and a.host = b.host where a.username = #{user} and b.create_time > now() - interval '7 day'
+          group by concat(b.muc_room_name, '@conference.',b.host)) a inner join muc_room_history b on
+          a.msgid = b.id) as a left join (select concat(a.muc_name, '@', a.domain)
+          as name, count(*) AS cnt from muc_room_users as a left join muc_room_history
+          as b on a.muc_name = b.muc_room_name and b.create_time > to_timestamp(a.date::double precision/1000)
+          where create_time > now() - interval '7 day'  and a.username = #{user} group by name)
+          as b on a.groupname = b.name;
+    </select>
+
+
+</mapper>

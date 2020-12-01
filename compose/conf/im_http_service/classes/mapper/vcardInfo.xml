@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.IVCardInfoDao">
+
+    <resultMap id="VCardVersionResultMap" type="com.qunar.qchat.dao.model.VCardInfoModel">
+        <result column="id" property="id"></result>
+        <result column="username" property="username"></result>
+        <result column="version" property="version"></result>
+        <result column="url" property="url"></result>
+        <result column="uin" property="uin"></result>
+        <result column="profile_version" property="profileVersion"></result>
+        <result column="mood" property="mood"></result>
+        <result column="gender" property="gender"></result>
+        <result column="host" property="host"></result>
+    </resultMap>
+
+    <sql id="column_all">
+        id, username, version, url, uin, profile_version, mood, gender, host
+    </sql>
+
+    <select id="getCountByUsernameAndHost" resultType="int">
+        select count(*) from vcard_version where username = #{username} and host = #{host}
+    </select>
+
+    <select id="selectByUsernameAndHost" resultMap="VCardVersionResultMap">
+       SELECT v.id, v.username, u.user_name AS nickname, v.version, v.url
+	   , v.uin, v.profile_version, v.mood, v.gender, v.host
+        FROM host_users u
+	   LEFT JOIN host_info h ON u.host_id = h.id
+	   LEFT JOIN vcard_version v
+	   ON h.host = v.host
+	  AND u.user_id = v.username
+WHERE (v.username = #{username}
+	AND v.host = #{host}
+	AND v.version >= #{version});
+
+    </select>
+
+    <insert id="insertVCardVersion" parameterType="com.qunar.qchat.dao.model.VCardInfoModel">
+        insert into vcard_version (username,version,url,profile_version,host) values (#{username},#{version},#{url},#{profileVersion},#{host})
+    </insert>
+
+</mapper>

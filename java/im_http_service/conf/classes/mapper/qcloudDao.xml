@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.IQCloudDao">
+
+    <insert id="insertQCloudMain" parameterType="QCloudMain">
+        <selectKey order="AFTER" keyProperty="q_id" resultType="long">
+            insert into qcloud_main(q_user,q_type,q_title,q_introduce,q_content,q_time, q_state)
+            values(#{q_user}, #{q_type}, #{q_title}, #{q_introduce}, #{q_content}, #{q_time}, #{q_state})  RETURNING id
+        </selectKey>
+    </insert>
+
+    <insert id="insertQCloudSub" parameterType="QCloudSub">
+        <selectKey order="AFTER" keyProperty="qs_id" resultType="long">
+            insert into qcloud_sub(q_id,qs_user,qs_type,qs_title,qs_introduce,qs_content,qs_time,qs_state)
+            values(#{q_id},#{qs_user},#{qs_type},#{qs_title},#{qs_introduce},#{qs_content},#{qs_time},#{qs_state}) RETURNING id
+        </selectKey>
+    </insert>
+
+    <insert id="insertQCloudMainHistory" parameterType="QCloudMainHistory">
+        <selectKey order="AFTER" keyProperty="qh_id" resultType="long">
+            insert into qcloud_main_history(q_id,qh_content,qh_time,qh_state)
+            values(#{q_id},#{qh_content},#{qh_time},#{qh_state}) RETURNING id
+        </selectKey>
+    </insert>
+
+    <insert id="insertQCloudSubHistory" parameterType="QCloudSubHistory">
+        <selectKey order="AFTER" keyProperty="qh_id" resultType="long">
+            insert into qcloud_sub_history(qs_id,qh_content,qh_time,qh_state)
+            values(#{qs_id},#{qh_content},#{qh_time},#{qh_state}) RETURNING id
+        </selectKey>
+    </insert>
+
+    <update id="updateQCloudMain" parameterType="QCloudMain">
+        UPDATE qcloud_main SET q_title = #{q_title}, q_introduce = #{q_introduce}, q_content = #{q_content}, q_time = #{q_time}
+        WHERE id = #{q_id};
+    </update>
+
+    <update id="updateQCloudSub" parameterType="QCloudSub">
+        UPDATE qcloud_sub SET qs_title = #{qs_title}, qs_introduce = #{qs_introduce}, qs_content = #{qs_content}, qs_time = #{qs_time}
+        WHERE id = #{qs_id};
+    </update>
+
+    <update id="updateQCloudMainWithState">
+        UPDATE qcloud_main SET q_state = #{state}, q_time = #{stime}
+        WHERE id = #{qid};
+    </update>
+
+    <update id="updateQCloudSubWithState">
+        UPDATE qcloud_sub SET qs_state = #{state}, qs_time = #{stime}
+        WHERE id = #{qsid};
+    </update>
+
+    <update id="updateQCloudSubForMainIdWithState">
+        UPDATE qcloud_sub SET qs_state = #{state}, qs_time = #{stime}
+        WHERE id = #{qid};
+    </update>
+
+    <resultMap type="QCloudMain" id="QCloudMainResultMap">
+        <id column="id" property="q_id"/>
+    </resultMap>
+
+    <select id="selectQCloudMain"
+            resultType="QCloudMain" resultMap="QCloudMainResultMap">
+        SELECT id,q_user,q_type,q_title,q_introduce,q_content,q_time,q_state
+        FROM qcloud_main
+        WHERE q_user = #{user} and q_time > #{stime}
+    </select>
+
+    <select id="selectQCloudMainWithId"
+            resultType="QCloudMain" resultMap="QCloudMainResultMap">
+        SELECT id,q_user,q_type,q_title,q_introduce,q_content,q_time,q_state
+        FROM qcloud_main
+        WHERE id = #{qid} and q_user = #{user}
+    </select>
+
+    <select id="selectQCloudMainWithType"
+            resultType="QCloudMain" resultMap="QCloudMainResultMap">
+        SELECT id,q_user,q_type,q_title,q_introduce,q_content,q_time,q_state
+        FROM qcloud_main
+        WHERE q_time > #{stime} and q_user = #{user} and q_type = #{type}
+    </select>
+
+    <resultMap type="QCloudSub" id="QCloudSubResultMap">
+        <id column="id" property="qs_id"/>
+    </resultMap>
+
+    <select id="selectQCloudSub"
+            resultType="QCloudSub" resultMap="QCloudSubResultMap">
+        SELECT id,q_id,qs_user,qs_type,qs_title,qs_introduce,qs_content,qs_time,qs_state
+        FROM qcloud_sub
+        WHERE q_id=#{qid} and qs_time > #{stime}
+    </select>
+
+    <select id="selectQCloudSubWithType"
+            resultType="QCloudSub" resultMap="QCloudSubResultMap">
+        SELECT id,q_id,qs_user,qs_type,qs_title,qs_introduce,qs_content,qs_time,qs_state
+        FROM qcloud_sub
+        WHERE q_id=#{qid} and qs_time > #{stime} and qs_type = #{type}
+    </select>
+    <select id="selectQCloudSubWithId"
+            resultType="QCloudSub" resultMap="QCloudSubResultMap">
+        SELECT id,q_id,qs_user,qs_type,qs_title,qs_introduce,qs_content,qs_time,qs_state
+        FROM qcloud_sub
+        WHERE id=#{qsid} and qs_user = #{user}
+    </select>
+
+    <resultMap type="QCloudMainHistory" id="QCloudMainHistoryResultMap">
+        <id column="id" property="qh_id"/>
+    </resultMap>
+
+    <select id="selectQCloudMainHistory"
+            resultType="QCloudMainHistory" resultMap="QCloudMainHistoryResultMap">
+        SELECT id,q_id,qh_content,qh_time,qh_state
+        FROM qcloud_main_history
+        WHERE q_id=#{qid}
+    </select>
+
+    <resultMap type="QCloudSubHistory" id="QCloudSubHistoryResultMap">
+        <id column="id" property="qh_id"/>
+    </resultMap>
+
+    <select id="selectQCloudSubHistory"
+            resultType="QCloudSubHistory" resultMap="QCloudSubHistoryResultMap">
+        SELECT id,qs_id,qh_content,qh_time,qh_state
+        FROM qcloud_sub_history
+        WHERE qs_id=#{qsid}
+    </select>
+
+    <!-- 批量插入 -->
+    <insert id="bulkInsertQCloudMain" useGeneratedKeys="true" parameterType="java.util.List" keyProperty="q_id">
+        insert into qcloud_main(q_user,q_type,q_title,q_introduce,q_content,q_time, q_state)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.q_user}, #{item.q_type}, #{item.q_title}, #{item.q_introduce}, #{item.q_content}, #{item.q_time}, #{item.q_state})
+        </foreach>
+    </insert>
+
+    <insert id="bulkInsertQCloudSub" useGeneratedKeys="true" parameterType="java.util.List" keyProperty="qs_id">
+        insert into qcloud_sub(q_id,qs_user,qs_type,qs_title,qs_introduce,qs_content,qs_time, qs_state)
+        values
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.q_id}, #{item.qs_user}, #{item.qs_type}, #{item.qs_title}, #{item.qs_introduce}, #{item.qs_content}, #{item.qs_time}, #{item.qs_state})
+        </foreach>
+    </insert>
+
+<!-- 批量更新 -->
+    <update id="bulkUpdateQCloudMain" useGeneratedKeys="true" parameterType="java.util.List">
+        UPDATE qcloud_main SET q_title = tmp.q_title, q_introduce = tmp.q_introduce, q_content = tmp.q_content, q_time = tmp.q_time
+        FROM ( VALUES
+        <foreach collection="list" item="item" index="index" separator="," >
+          (#{item.q_id},#{item.q_title},#{item.q_introduce},#{item.q_content},#{item.q_time})
+        </foreach>
+        ) AS tmp (q_id,q_title,q_introduce,q_content,q_time)
+        WHERE id = tmp.q_id;
+    </update>
+
+    <update id="bulkUpdateQCloudSub" useGeneratedKeys="true" parameterType="java.util.List">
+        UPDATE qcloud_sub SET qs_title = tmp.qs_title, qs_introduce = tmp.qs_introduce, qs_content = tmp.qs_content, qs_time = tmp.qs_time
+        FROM ( VALUES
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.qs_id},#{item.qs_title},#{item.qs_introduce},#{item.qs_content},#{item.qs_time})
+        </foreach>
+        ) AS tmp (qs_id,qs_title,qs_introduce,qs_content,qs_time)
+        WHERE id = tmp.qs_id;
+    </update>
+
+</mapper>

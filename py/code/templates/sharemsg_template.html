@@ -1,0 +1,285 @@
+<html>
+<head>
+    <title>分享聊天记录</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,minimal-ui" name="viewport"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta id="twcClient" name="twcClient" content="false"/>
+    <style type="text/css">
+        .g-flexbox {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+
+        .g-flexbox .flex {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            height: auto;
+            display: block;
+            overflow: hidden;
+        }
+
+        .line {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .line2 {
+            width: 100%;
+            display: -webkit-box;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .extleft {
+            width: 100px;
+            height: 100px;
+            margin-right: 10px;
+        }
+
+        .extleft img {
+            max-width: 100px !important;
+        }
+
+        div.speech {
+            margin: 10px 0;
+            padding: 8px;
+            table-layout: fixed;
+            word-break: break-all;
+            position: relative;
+            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #ececec), color-stop(0.5, #dbdbdb), color-stop(0.9, #dcdcdc), to(#8c8c8c));
+            border: 1px solid #989898;
+            -webkit-border-radius: 8px;
+            -moz-border-radius: 8px;
+            border-radius: 8px;
+        }
+
+        div.speech:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 15px;
+            top: -20px;
+            border: 10px solid;
+            border-color: transparent transparent #989898 transparent;
+        }
+
+        div.speech:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            left: 17px;
+            top: -16px;
+            border: 8px solid;
+            border-color: transparent transparent #ffffff transparent;
+        }
+
+        div.speech.right {
+            box-shadow: -2px 2px 5px #CCC;
+            margin-right: 10px;
+            margin-left: 4px;
+            float: right;
+            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#e4ffa7), color-stop(0.1, #bced50), color-stop(0.4, #aed943), color-stop(0.8, #a7d143), to(#99BF40));
+        }
+
+        div.speech.right:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 9px;
+            bottom: auto;
+            left: auto;
+            right: -10px;
+            border-width: 9px 0 9px 10px;
+            border-color: transparent #989898;
+        }
+
+        div.speech.right:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 10px;
+            bottom: auto;
+            left: auto;
+            right: -8px;
+            border-width: 8px 0 8px 9px;
+            border-color: transparent #bced50;
+        }
+
+        div.speech.left {
+            box-shadow: 2px 2px 2px #CCCCCC;
+            margin-left: 10px;
+            margin-right: 4px;
+            float: left;
+            background: -webkit-gradient(linear, 50% 0%, 50% 100%, from(#ffffff), color-stop(0.1, #eae8e8), color-stop(0.4, #E3E3E3), color-stop(0.8, #DFDFDF), to(#D9D9D9));
+        }
+
+        div.speech.left:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 9px;
+            bottom: auto;
+            left: -10px;
+            border-width: 9px 10px 9px 0;
+            border-color: transparent #989898;
+        }
+
+        div.speech.left:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            top: 10px;
+            bottom: auto;
+            left: -8px;
+            border-width: 8px 9px 8px 0;
+            border-color: transparent #eae8e8;
+        }
+
+        .leftd, .rightd {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .leftd .main, .rightd .main {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
+
+        .leftimg {
+            /*background: url(jquerymobile/images/icon3.png) 0px 10px no-repeat;*/
+            padding-left: 2px;
+            padding-right: 2px;
+        }
+
+        .rightimg {
+            /*background: url(jquerymobile/images/icon10.png) right 10px no-repeat;*/
+            padding-right: 2px;
+            padding-left: 2px;
+        }
+
+        .conv {
+            margin: 10px 10px 0 10px;
+            border: 1px solid #a1a1a1;
+            border-radius: 5px;
+            -moz-border-radius: 25px; /* 老的 Firefox */
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+            padding: 10px
+        }
+
+        .conv > div {
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: flex;
+            box-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .conv .title {
+            -webkit-box-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+            color: #333;
+        }
+
+        .linkbtn {
+            background: #2ecc71;
+            color: #fff;
+            border: 1px solid #fff;
+            font-family: inherit;
+            font-size: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            outline: none;
+            box-sizing: border-box;
+            align-items: flex-start;
+            text-align: center;
+            text-rendering: auto;
+            text-indent: 0px;
+            text-shadow: none;
+            -webkit-transition: all 0.3s;
+            -moz-transition: all 0.3s;
+            transition: all 0.3s;
+            padding: 2px;
+            border-radius: 5px;
+            -moz-border-radius: 25px; /* 老的 Firefox */
+        }
+
+        .highlight {
+            color: red;
+            font-weight: 500;
+        }
+
+        em {
+            color: red;
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        .outter {
+            background: none;
+        }
+
+        .outter .search_term {
+            padding: 10px;
+            width: 60%;
+            height: 48px;
+            border: 5px solid #dedede;
+            -moz-border-radius: 8px; /* Gecko browsers */
+            -webkit-border-radius: 8px; /* Webkit browsers */
+            border-radius: 8px; /* W3C syntax */
+        }
+
+        .time_container {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 10px;
+            color: #666;
+            text-align: center;
+            border-radius: 20px;
+            border: 1px solid #dedede;
+            padding: 0 6px;
+        }
+
+        #m_con {
+            padding: 0 10px;
+        }
+
+        img {
+            max-width: 240px !important;
+        }
+    </style>
+</head>
+<body>
+<div id="m_con">
+    {% autoescape false %}
+        {{content}}
+    {% endautoescape %}
+</div>
+</body>
+</html>

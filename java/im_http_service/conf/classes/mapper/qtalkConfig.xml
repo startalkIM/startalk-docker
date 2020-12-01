@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qunar.qchat.dao.IQtalkConfigDao">
+
+    <resultMap id="resultMap" type="com.qunar.qchat.dao.model.QtalkConfigModel">
+        <result column="id" property="id"></result>
+        <result column="config_key" property="configKey"></result>
+        <result column="config_value" property="configValue"></result>
+    </resultMap>
+
+    <select id="getConfigMap" resultMap="resultMap">
+        select id, config_key, config_value from qtalk_config;
+    </select>
+
+
+    <insert id="insertConfigs" useGeneratedKeys="true" keyProperty="id">
+        insert into qtalk_config(config_key, config_value) VALUES
+        <if test="list != null and list.size() > 0">
+            <foreach collection="list" separator="," item="config">
+                (#{config.configKey},#{config.configValue})
+            </foreach>
+        </if>
+        <selectKey resultType="long" order="AFTER" keyProperty="id" >
+            SELECT currval('qtalk_config_id_seq')
+        </selectKey>
+    </insert>
+
+    <insert id="insertOrUpdateConfig" parameterType="com.qunar.qchat.dao.model.QtalkConfigModel">
+        INSERT  into qtalk_config(config_key, config_value) VALUES
+        (#{configKey},#{configValue}) ON conflict(config_key) DO UPDATE SET config_value =#{configValue}
+    </insert>
+
+    <delete id="deleteConfig">
+        DELETE from qtalk_config where config_key!='import_way';
+    </delete>
+</mapper>

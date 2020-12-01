@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.IClentConfigSyncDao">
+
+    <resultMap id="ClientConfigModel" type="com.qunar.qchat.dao.model.ClientConfigModel">
+        <!-- 用result属性来映射非主键字段 -->
+        <result property="configkey" column="configkey" />
+        <result property="configinfo" column="configinfo" />
+        <result property="isdel" column="isdel"/>
+    </resultMap>
+    <!--parameterType="java.util.List"-->
+    <!--resultType="com.qunar.qchat.dao.model.ClientConfigInfoo"-->
+    <!--select configinfo ,isdel, max(version) from client_config_sync where username='' and host='' and key='' and version > v;-->
+    <select id="selectIncrementConfigData" resultMap="ClientConfigModel" >
+        SELECT configkey, subkey, configinfo, isdel FROM ${table}
+        WHERE username = #{username} AND host = #{host} AND version > #{version} ORDER BY update_time;
+    </select>
+
+    <insert id="insertClientConfig">
+        INSERT INTO ${table}
+        (username, host, configkey, subkey, configinfo, version, operate_plat)
+        VALUES (#{username}, #{host}, #{key}, #{subkey}, #{value}, #{version}, #{operate_plat});
+    </insert>
+    <!--to_timestamp(#{update_time} + (#{index} + 1))::timestamptz(3)-->
+    <insert id="insertBatchClientConfig" parameterType="java.util.Set">
+        INSERT INTO ${table}
+        (username, host, configkey, subkey, configinfo, version, operate_plat, update_time)
+        VALUES
+        <foreach collection="datas" item="item" index="index" separator=",">
+            (#{username}, #{host}, #{item.key}, #{item.subkey}, #{item.value}, #{version}, #{operate_plat}, now() + '${index}S')
+        </foreach>
+        ON CONFLICT (username, host, configkey, subkey)
+        DO UPDATE
+        SET version  = #{version},
+        isdel = 0,
+        configinfo = EXCLUDED.configinfo,
+        operate_plat = EXCLUDED.operate_plat;
+    </insert>
+    <update id="updateClientConfig">
+        UPDATE ${table}
+        SET version  = #{version},
+        isdel = #{isdel},
+        configinfo = #{value},
+        operate_plat = #{operate_plat},
+        update_time = now()
+        WHERE
+        username = #{username} and
+        host = #{host} and
+        configkey = #{key} and
+        subkey = #{subkey};
+    </update>
+
+    <update id="updateBatchClientConfig">
+        UPDATE ${table}
+        SET version  = #{version},
+        isdel = #{isdel},
+        update_time = now(),
+        operate_plat = #{operate_plat}
+        WHERE
+        username = #{username} and
+        host = #{host} and
+        (configkey, subkey) IN
+        (<foreach collection="datas" index="index" item="data" separator=",">
+        (#{data.key},#{data.subkey})
+         </foreach>)
+        ;
+    </update>
+
+    <select id="selectMaxVersion" resultType="java.lang.Long">
+        SELECT COALESCE(MAX(version), 0) FROM ${table}
+        WHERE username = #{username} AND host = #{host};
+    </select>
+</mapper>

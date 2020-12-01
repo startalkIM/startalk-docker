@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.qunar.qchat.dao.IProfileDao">
+    <select id="selectProfileInfo" resultType="com.qunar.qchat.dao.model.Profile">
+        select username, host, mood, profile_version as version from vcard_version where profile_version >= #{version} and username= #{username} and host = #{host};
+    </select>
+
+    <select id="selectProfileInfoByUserAndHost" resultType="com.qunar.qchat.dao.model.Profile">
+        select username, host, mood, url, profile_version as version from vcard_version where username= #{username} and host = #{host} order by profile_version desc limit 1;
+    </select>
+
+    <select id="updateProfileInfo" resultType="com.qunar.qchat.dao.model.Profile">
+        update vcard_version
+        <set>
+            <if test="url != null and url != ''">
+                url = #{url},
+            </if>
+            <if test="mood != null">
+                mood = #{mood},
+            </if>
+            profile_version = vcard_version.profile_version + 1,
+            version = vcard_version.version + 1
+        </set>
+        where username= #{username} and host = #{host}
+
+        returning username, host, mood, url, profile_version as version;
+    </select>
+
+    <select id="selectUserCountByUserIdAndHost" resultType="int">
+        select count(*) from host_users u, host_info h where u.host_id = h.id and u.user_id = #{userId} and u.hire_flag = 1 and host = #{host}
+    </select>
+
+    <select id="selectVCardCount" resultType="int">
+        select count(*) from vcard_version where username= #{userName} and host = #{host}
+    </select>
+
+    <insert id="insertVCard" parameterType="com.qunar.qchat.dao.model.Profile">
+        insert into vcard_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="username != null">username,</if>
+            <if test="url != null">url,</if>
+            <if test="mood != null">mood,</if>
+            <if test="host != null">host,</if>
+            <if test="version != null">version,</if>
+            <if test="version != null">profile_version,</if>
+            <if test="gender != null">gender,</if>
+        </trim>
+
+        <trim prefix=" values (" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="url != null">#{url},</if>
+            <if test="mood != null">#{mood},</if>
+            <if test="host != null">#{host},</if>
+            <if test="version != null">#{version},</if>
+            <if test="version != null">#{version},</if>
+            <if test="gender != null">#{gender},</if>
+        </trim>
+    </insert>
+</mapper>

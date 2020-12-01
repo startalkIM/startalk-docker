@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qunar.qchat.dao.IFloginUserDao">
+
+    <resultMap id="FloginUserResultMap" type="com.qunar.qchat.dao.model.FloginUserModel">
+        <result column="username" property="userName"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <select id="selectFloginUsers" resultMap="FloginUserResultMap">
+        select username,create_time from flogin_user where username is not null and username != ''
+    </select>
+
+    <select id="selectFloginUserNames" resultType="string">
+        select username from flogin_user where username is not null and username != ''
+    </select>
+
+</mapper>
+
+
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=2.0, user-scalable=no, width=device-width"
+          name="viewport">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/meetingdetail.css') }}">
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+    <title>行程邀请</title>
+</head>
+
+<body class="bodyClass">
+{% autoescape false %}
+{{content}}
+{% endautoescape %}
+<!--<script type="text/javascript" src="../js/jquery-3.2.1.min.js"></script>-->
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+<script>
+    var params = '{{ params|tojson }}';
+    var user_id = '{{ user_id }}';
+    $("#jieshou").click(function () {
+        MeetingTheOperation(1);
+    });
+
+    $("#zanding").click(function () {
+        MeetingTheOperation(0);
+    });
+
+    $("#jujue").click(function () {
+        MeetingTheOperation(2);
+    });
+
+    function MeetingTheOperation(type) {
+        $remark = $("#remark").val();
+        var json = JSON.parse(params);
+        json['action'] = type;
+        json['action_reason'] = $remark;
+        json['username'] = user_id;
+        $.ajax({
+            type: "POST",
+            data: JSON.stringify(json),
+	    headers: {
+	        'Accept': 'application/json',
+        	'Content-Type': 'application/json'
+            },
+            dataType: "json",
+            url: "/py/meetingajaxhelp",
+            // url: './MeetingAjaxHelp.php',
+            success: function (msg) {
+                if (msg['ret']) {
+                    window.location.reload();
+                } else {
+                    alert(msg['errmsg']);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
