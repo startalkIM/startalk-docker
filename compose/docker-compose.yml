@@ -1,8 +1,8 @@
-version: "3.8"
+#version: "3.8"
 services:
   postgres:
-    image: 'startalk-pg:test'
-    network_mode: host
+    image: 'startalk/startalk-pg:0.1'
+    #network_mode: host
     restart: always
     volumes:
       - ${PWD}/volume/data/pg/pgdata-volume:/var/lib/postgresql/data
@@ -14,8 +14,8 @@ services:
       - "5432:5432"
 
   redis:
-    #image: 'startalk-redis:test'
-    network_mode: host
+    #image: 'startalk/startalk-redis:0.1'
+    #network_mode: host
     image: 'redis:6.0.9-alpine'
     command: redis-server --requirepass 123456
     restart: always
@@ -24,28 +24,31 @@ services:
 
 
   openresty:
-    network_mode: host
-    image: 'startalk-or:test'
+    #network_mode: host
+    image: 'startalk/startalk-or:0.1'
     volumes:
       - ${PWD}/volume/log/or/:/usr/local/openresty/nginx/logs/
     ports:
       - '8080:8080'
 
   ejabberd:
-    network_mode: host
-    image: 'startalk-ejab:test'
+    #network_mode: host
+    image: 'startalk/startalk-ejab:0.1'
     ports:
       - '5202:5202'
+      - '5280:5280'
     volumes:
       - ${PWD}/volume/log/ejabberd/:/startalk/ejabberd/var/log/ejabberd/
+      - ${PWD}/conf/ejabberd/ejabberdctl.cfg.qunar:/startalk/ejabberd/etc/ejabberd/ejabberdctl.cfg
+      - ${PWD}/conf/ejabberd/ejabberd.yml.qunar:/startalk/ejabberd/etc/ejabberd/ejabberd.yml
     command: /startalk/ejabberd/sbin/ejabberdctl foreground
     depends_on:
       - postgres
       - redis
 
   im_http_service:
-    network_mode: host
-    image: 'startalk-im_http_service:test'
+    #network_mode: host
+    image: 'startalk/startalk-im_http_service:0.1'
     ports:
       - '8081:8081'
     volumes:
@@ -57,8 +60,8 @@ services:
       - redis
 
   qfproxy:
-    network_mode: host
-    image: 'startalk-qfproxy:test'
+    #network_mode: host
+    image: 'startalk/startalk-qfproxy:0.1'
     ports:
       - '8082:8082'
     volumes:
@@ -70,8 +73,8 @@ services:
       - redis
 
   push_service:
-    network_mode: host
-    image: 'startalk-push_service:test'
+    #network_mode: host
+    image: 'startalk/startalk-push_service:0.1'
     ports:
       - '8083:8083'
     volumes:
@@ -83,8 +86,8 @@ services:
       - redis
 
   search:
-    network_mode: host
-    image: 'startalk-search:test'
+    #network_mode: host
+    image: 'startalk/startalk-search:0.1'
     volumes:
       - ${PWD}/volume/log/search/:/app/log/
     ports:

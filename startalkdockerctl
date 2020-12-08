@@ -20,7 +20,7 @@ case "${unameOut}" in
     MINGW*)     machine=MinGw;;
     *)          machine="UNKNOWN:${unameOut}"
 esac
-if [ ${machine} = "Cygwin" ]
+if [ ${machine} = "MinGw" ]
 then
   echo "WARNING: This script may malfunction besides of Linux and Darwin..."
 fi
@@ -47,7 +47,7 @@ set_ip() {
   then
     ifconfig
     ALL_IP=`ipconfig getifaddr en0`
-  elif [ ${machine} == "Cygwin" ]
+  elif [ ${machine} == "MinGw" ]
   then
     ipconfig
     ALL_IP=`ipconfig.exe | grep -im1 'IPv4 Address' | cut -d ':' -f2`
@@ -62,14 +62,44 @@ set_ip() {
           ;;
   esac
     
-
   SED_IP=$(echo "$OLD_IP" | sed 's/\./\\\./g')
-  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
-  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/app.properties
-  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf//qfproxy/classes/qfproxy.properties
-  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/im_http_service/conf/classes/*.json
-  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/qfproxy/conf/classes/qfproxy.properties
-  sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/push_service/conf/classes/app.properties
+  if [ ${machine} == "Linux" ]
+  then
+    sed -i"s/host: \"$SED_IP\" \#IP_TOBECHANGED/sql_server: \"$MY_IP\" \#IP_TOBECHANGE/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
+    sed -i "s/sql_server: \"$SED_IP\"/sql_server: \"$MY_IP\"/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/jdbc.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/redis.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/app.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/jdbc.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/redis.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf//qfproxy/classes/qfproxy.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/im_http_service/conf/classes/*.json
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/im_http_service/classes/jdbc.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/im_http_service/classes/redis.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/qfproxy/conf/classes/qfproxy.properties
+    sed -i "s/http:\/\/$SED_IP/http:\/\/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/app.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/push_service/classes/jdbc.properties
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/push_service/classes/redis.properties
+  elif [ ${machine} == "Mac" ]
+  then
+    sed -i '' "s/host: \"$SED_IP\" \#IP_TOBECHANGED/sql_server: \"$MY_IP\" \#IP_TOBECHANGE/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
+    sed -i '' "s/sql_server: \"$SED_IP\"/sql_server: \"$MY_IP\"/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/jdbc.properties
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/redis.properties
+    sed -i '' "s/http:\/\/$SED_IP/http:\/\/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/app.properties
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/jdbc.properties
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/push_service/classes/redis.properties
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf//qfproxy/classes/qfproxy.properties
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/java/im_http_service/conf/classes/*.json
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/java/qfproxy/conf/classes/qfproxy.properties
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/java/push_service/conf/classes/app.properties
+  elif [ ${machine} == "MinGw" ]
+  then
+    ipconfig
+    ALL_IP=`ipconfig.exe | grep -im1 'IPv4 Address' | cut -d ':' -f2`
+  fi
 }
 
 go_path() {
