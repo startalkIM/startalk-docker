@@ -65,7 +65,9 @@ set_ip() {
   SED_IP=$(echo "$OLD_IP" | sed 's/\./\\\./g')
   if [ ${machine} == "Linux" ]
   then
-    sed -i"s/host: \"$SED_IP\" \#IP_TOBECHANGED/sql_server: \"$MY_IP\" \#IP_TOBECHANGE/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
+    #redis
+    sed -i"s/host: \"$SED_IP\" \#IP_TOBECHANGE/\"$MY_IP\" \#IP_TOBECHANGE/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
+    #sql
     sed -i "s/sql_server: \"$SED_IP\"/sql_server: \"$MY_IP\"/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
     sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
     sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/jdbc.properties
@@ -83,7 +85,7 @@ set_ip() {
     sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/java/push_service/classes/redis.properties
   elif [ ${machine} == "Mac" ]
   then
-    sed -i '' "s/host: \"$SED_IP\" \#IP_TOBECHANGED/sql_server: \"$MY_IP\" \#IP_TOBECHANGE/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
+    sed -i '' "s/host: \"$SED_IP\" \#IP_TOBECHANGE/sql_server: \"$MY_IP\" \#IP_TOBECHANGE/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
     sed -i '' "s/sql_server: \"$SED_IP\"/sql_server: \"$MY_IP\"/g" ${PWD}/compose/conf/ejabberd/ejabberd.yml.qunar
     sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
     sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/jdbc.properties
