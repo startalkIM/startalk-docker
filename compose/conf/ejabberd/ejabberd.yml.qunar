@@ -348,7 +348,7 @@ auth_password_format: plain
 ## PostgreSQL server:
 ##
 sql_type: pgsql
-sql_server: "ip" #IP_TOBECHANGED
+sql_server: "startalk-pg"
 sql_database: "ejabberd"
 sql_username: "ejabberd"
 sql_password: "123456"
@@ -556,7 +556,7 @@ redis_size_args:
   size: 10
   max_overflow: 20
 redis_worker_args:
-  host: "ip" #IP_TOBECHANGED
+  host: "startalk-redis"
   port: 6379
   password: "123456"
 
@@ -664,9 +664,9 @@ default_domain: "conference.qtalk"
 message_permissions: false
 
 push_url:
-  - "http://127.0.0.1:8083/push_service/qtapi/token/sendMessageToPush.qunar"
+  - "http://startalk-push:8083/push_service/qtapi/token/sendMessageToPush.qunar"
 
-auth_url: "http://127.0.0.1:8081/im_http_service/corp/newapi/auth/checktoken.qunar"
+auth_url: "http://startalk-im-http:8081/im_http_service/corp/newapi/auth/checktoken.qunar"
 
 rsa_public_key: "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCy2VXDAlCZlj7gPHvC/vwvbpTN\n/GyW0tmNCqh0UPitdTTGZk3UcLqu9lWMGPViL/5lhboiSogsDxJLHdwo91DDBjTX\n1HbuyuOhvsvayV7Yc8t+ajFW/8RwlvhGSzVplthoU+md9kGeZ8t73VWWZUEB0iyW\nx7Y/RjUwTdnOlNXDzQIDAQAB\n-----END PUBLIC KEY-----"
 rsa_private_key: "-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgQCy2VXDAlCZlj7gPHvC/vwvbpTN/GyW0tmNCqh0UPitdTTGZk3U\ncLqu9lWMGPViL/5lhboiSogsDxJLHdwo91DDBjTX1HbuyuOhvsvayV7Yc8t+ajFW\n/8RwlvhGSzVplthoU+md9kGeZ8t73VWWZUEB0iyWx7Y/RjUwTdnOlNXDzQIDAQAB\nAoGAHlGlrkdoLoE/63eVa3saeVf/tePC7NaVtslFwWIwpgcmiTOyof7yRtLPsc5R\nWvHT6JYA9es4pm9vpHhNaEx0zjJkuAW9ECLb4dZA1b6stQy7nHl7dgT13RsEjKJI\n3CYLmK2Mneis9dObzz0CqMgdbAA456zQ4VuMlwJZzf0BT8ECQQDWipbxMey0tn+1\nI4lL+1JYfrfQZoA+dv0d8X2gt0d8itJFPQYWsJCt4vUl48c58E+hWarCBl+yl4ym\nz7RltmwpAkEA1WkIvwWlCyliUpgM7V0rp8vxBPyTXqNZ6+xiqVotX2PIQ116fNVW\n5Tx5DoAxQ/c+QALOZXAiY7BiAZ+AMl1PBQJAZaAYiAAiJCgerms66icOhqTf5XPo\nY65xj/GIlMy8rB4GJI4XiD/zCKttfJk9EhDnZ4LWBDqIskxfb9ULmvKioQJAfo6w\nWh/t1WWwYky7ddRH/FVMVGm4t2nl/KwNgmLw/128OH7qEbeutXkcTUYmcSjhaLKB\nVdSfAEFsjYvaSYPeRQJBANLk4jCONVQkYzSmnvqUrFvDOFq9Ei5J08waevFIoaia\nJJ9OvMg0AueWwHo/kfNz1GkCV6de4mKTshgT5d2V0T4=\n-----END RSA PRIVATE KEY-----"
