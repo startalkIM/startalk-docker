@@ -26,7 +26,7 @@ As for usage in production enviroment, the origin way of deployment is more reco
   This equals  docker-compose -d, it starts Startalk in background. 
 
 5. Use PC client connect to the startalk-docker via navigation: http://${ip_you_provide}:8080/newapi/nck/qtalk_nav.qunar  
-  Download PC clientfrom our website: [Download Page](https://i.startalk.im/home/#/download)  
+  Download PC client from our website: [Download Page](https://i.startalk.im/home/#/download)  
 
 
 ## Port Usage:
