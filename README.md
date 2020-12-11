@@ -18,14 +18,11 @@ As for usage in production enviroment, the origin way of deployment is more reco
 2. ```git clone git@github.com:startalkIM/startalk-docker.git```  
   It contains docker compose part and source part which have Dockerfile and code for each image in case you want to make some modifications.
 
-3. ```./startalkdockerctl init```
+3. ```./startalkdockerctl init```  
+  **WARNING: For users in Windows, if you don't have sed command installed on your PC, we recommend install Git Bash (https://gitforwindows.org/) and then execute this script.**  
+  This script use sed command to correct IP in config files so that Startalk clients can reach the server. It also supports clean up the data and start docker- compose. See ```./startalkdockerctl help```. 
 
-  **WARNING: For users in Windows, if you don't have sed command installed on your PC, we recommend install Git Bash (https://gitforwindows.org/) and then execute this script.**
-    
-  This script use sed command to correct IP in config files so that Startalk clients can reach the server. It also supports clean up the data and start docker-compose. See startalkdockerctl help. 
-
-4. ```./startalkdockerctl start```
-
+4. ```./startalkdockerctl start```  
   This equals  docker-compose -d, it starts Startalk in background. 
 
 5. Use PC client connect to the startalk-docker via navigation: http://${ip_you_provide}:8080/newapi/nck/qtalk_nav.qunar  
