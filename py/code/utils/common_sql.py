@@ -58,7 +58,15 @@ class UserLib:
     def __init__(self, user_id=None):
         # global all_user_data
         global domain
-        self.conn = psycopg2.connect(host=host, database=database, user=user, password=password, port=port)
+        n=0
+        self.conn = None
+        while not self.conn:
+            try:
+                self.conn = psycopg2.connect(host=host, database=database, user=user, password=password, port=port)
+            except Exception as e:
+                sql_logger.error("CANNOT CANNECT TO DATABASE, ERROR: {}".format(e))
+                time.sleep(5)
+
         self.conn.autocommit = True
         __domain = None
         self.user_data = {}

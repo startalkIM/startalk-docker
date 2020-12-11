@@ -51,14 +51,17 @@ services:
       - ${PWD}/conf/or/conf.d/subconf/or.server.location.package.qtapi.conf:/usr/local/openresty/nginx/conf/conf.d/subconf/or.server.location.package.qtapi.conf
       - ${PWD}/conf/or/conf.d/upstreams/qt.qunar.com.upstream.conf:/usr/local/openresty/nginx/conf/conf.d/upstreams/qt.qunar.com.upstream.conf
       - ${PWD}/conf/or/nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf
+      - ${PWD}/conf/or/lua_app/qtalkredis.lua:/usr/local/openresty/nginx/lua_app/checks/qim/qtalkredis.lua
     ports:
       - '8080:8080'
     #command: /usr/local/openresty/bin/openresty
     depends_on:
+      - qfproxy
       - postgres
       - redis
       - search
       - push_service
+      - im_http_service
 
   ejabberd:
     container_name: startalk-ejab
@@ -133,7 +136,7 @@ services:
     networks:
       - startalk-net
     #network_mode: startalk-net
-    image: 'startalk/startalk-search:0.1'
+    image: 'startalk/startalk-search:test'
     #restart: always
     volumes:
       - ${PWD}/volume/log/search/:/app/log/
