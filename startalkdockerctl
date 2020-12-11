@@ -101,8 +101,12 @@ set_ip() {
     #sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/java/push_service/conf/classes/app.properties
   elif [ ${machine} == "MinGw" ]
   then
-    ipconfig
-    ALL_IP=`ipconfig.exe | grep -im1 'IPv4 Address' | cut -d ':' -f2`
+    #ipconfig
+    #ALL_IP=`ipconfig.exe | grep -im1 'IPv4 Address' | cut -d ':' -f2`
+    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
+  else
+  then
+	echo "Please modify  ${PWD}/compose/conf/im_http_service/classes/*.json to your IP manually"
   fi
 }
 

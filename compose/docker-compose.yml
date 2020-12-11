@@ -136,7 +136,7 @@ services:
     networks:
       - startalk-net
     #network_mode: startalk-net
-    image: 'startalk/startalk-search:test'
+    image: 'startalk/startalk-search:0.2'
     #restart: always
     volumes:
       - ${PWD}/volume/log/search/:/app/log/
