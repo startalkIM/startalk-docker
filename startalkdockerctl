@@ -50,7 +50,7 @@ set_ip() {
   elif [ ${machine} == "MinGw" ]
   then
     ipconfig
-    ALL_IP=`ipconfig.exe | grep -im1 'IPv4 Address' | cut -d ':' -f2`
+    ALL_IP=`ipconfig.exe | grep -im1 'IPv4 Address' | cut -d ':' -f2 | xargs `
   fi
   read -r -p "*******  Is $ALL_IP the ip you gonna use? [y/N] : " response
   case "$response" in
@@ -103,10 +103,9 @@ set_ip() {
   then
     #ipconfig
     #ALL_IP=`ipconfig.exe | grep -im1 'IPv4 Address' | cut -d ':' -f2`
-    sed -i '' "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
+    sed -i "s/$SED_IP/$MY_IP/g" ${PWD}/compose/conf/im_http_service/classes/*.json
   else
-  then
-	echo "Please modify  ${PWD}/compose/conf/im_http_service/classes/*.json to your IP manually"
+    echo "Please modify  ${PWD}/compose/conf/im_http_service/classes/*.json to your IP manually"
   fi
 }
 
