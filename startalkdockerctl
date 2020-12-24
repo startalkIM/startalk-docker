@@ -52,15 +52,25 @@ set_ip() {
     ipconfig
     ALL_IP=`ipconfig.exe | grep -im1 'IPv4 Address' | cut -d ':' -f2 | xargs `
   fi
-  read -r -p "*******  Is $ALL_IP the ip you gonna use? [y/N] : " response
-  case "$response" in
-      [yY][eE][sS]|[yY]) 
-          MY_IP=${ALL_IP}
-          ;;
-      *)
-          read -r -p "*******  Please input your IP : " MY_IP
-          ;;
-  esac
+  if [ -z ${ALL_IP} ]
+  then
+    read -r -p "******* No IP found, please input your IP : " MY_IP
+  else
+    read -r -p "*******  Is $ALL_IP the ip you gonna use? [y/N] : " response
+    case "$response" in
+        [yY][eE][sS]|[yY][\e]) 
+            MY_IP=${ALL_IP}
+	    echo $MY_IP
+            ;;
+	"") 
+            MY_IP=${ALL_IP}
+            echo $MY_IP
+            ;;
+        *)
+            read -r -p "*******  Please input your IP : " MY_IP
+            ;;
+    esac
+  fi
     
   SED_IP=$(echo "$OLD_IP" | sed 's/\./\\\./g')
   if [ ${machine} == "Linux" ]

@@ -108,7 +108,8 @@ services:
       - '8082:8082'
     volumes:
       - ${PWD}/volume/log/qfproxy/:/usr/local/tomcat/logs/
-      - ${PWD}/volume/data/qfproxy/:/startalk/tomcat/qfproxy/upload/
+      - ${PWD}/volume/data/qfproxy:/data
+        #- ${PWD}/volume/data/qfproxy/:/startalk/tomcat/qfproxy/upload/
       - ${PWD}/conf/qfproxy/server.xml:/usr/local/tomcat/conf/server.xml
       - ${PWD}/conf/qfproxy/classes/:/usr/local/tomcat/webapps/qfproxy/WEB-INF/classes/
     depends_on:
