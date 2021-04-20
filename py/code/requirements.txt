@@ -1,6 +1,6 @@
 aiohttp==3.5.4
 async-timeout==3.0.1
-asyncpg==0.18.3
+asyncpg==0.21.0
 attrs==19.1.0
 beautifulsoup4==4.7.1
 certifi==2019.3.9
