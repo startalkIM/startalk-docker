@@ -3,7 +3,7 @@ async-timeout==3.0.1
 asyncpg==0.18.3
 attrs==19.1.0
 beautifulsoup4==4.7.1
-certifi==2019.3.9
+certifi==2022.12.7
 chardet==3.0.4
 chinesecalendar==1.2.0
 Click==7.0
